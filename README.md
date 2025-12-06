@@ -62,6 +62,8 @@ python3 generate_distorted_image.py \
 
 If any rendering issue occurs, please follow the discussion at: https://github.com/python-pillow/Pillow/issues/3593
 
+**Note:** This code has been heavily refactored before being pushed to GitHub. While we've tested it thoroughly, bugs may have snuck in during the refactoring process (they're sneaky like that). If you encounter any issues, please open an issue on GitHub or send an email to tahsinbd247@gmail.com.
+
 ## Acknowledgements
 
 If this work is useful in your research, please cite it as follows:
