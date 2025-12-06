@@ -1,0 +1,12 @@
+python3 generate_distorted_image.py \
+    --text "কোচবিহারের প্রথম রেলপথ ছিল যখন কোচবিহার রাজ্য রেলপথ ১৯০১ সালে" \
+    --font_size 48 \
+    --font_path "" \
+    --background_path "" \
+    --angle 5 \
+    --bars True \
+    --add_random_text False \
+    --add_boxes False \
+    --add_curves False \
+    --apply_data_augmentation True \
+    --output_path "out/generated_image.png"
