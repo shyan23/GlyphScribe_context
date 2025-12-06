@@ -15,13 +15,6 @@ from glyphscribe import GlyphScribe
 @click.option('--output_path', default="generated_image.png", help='Output path of the generated image')
 def generate_text_image(text, font_size, font_path, background_path, angle, bars, add_random_text, add_boxes, add_curves, apply_data_augmentation, output_path):
     print(f"Provided text: {text}")
-    return generate_text_image_logic(text, font_size, font_path, background_path, angle, bars, add_random_text, add_boxes, add_curves, apply_data_augmentation, output_path)
-
-def generate_text_image_logic(text, font_size, font_path, background_path, angle, bars, add_random_text, add_boxes, add_curves, apply_data_augmentation, output_path):
-    """
-    Legacy function wrapper for backward compatibility.
-    Uses the GlyphScribe class internally.
-    """
     scribe = GlyphScribe()
     return scribe.generate(text, font_size, font_path, background_path, angle, bars,
                           add_random_text, add_boxes, add_curves, apply_data_augmentation, output_path)
