@@ -12,12 +12,13 @@ from glyphscribe import GlyphScribe
 @click.option('--add_boxes', default=True, type=click.BOOL, help='Add boxes to the image')
 @click.option('--add_curves', default=False, type=click.BOOL, help='Apply curves to the text')
 @click.option('--apply_data_augmentation', default=True, type=click.BOOL, help='Apply data augmentation to the image')
+@click.option('--white_background', default=True, type=click.BOOL, help='Use white background instead of background image')
 @click.option('--output_path', default="generated_image.png", help='Output path of the generated image')
-def generate_text_image(text, font_size, font_path, background_path, angle, bars, add_random_text, add_boxes, add_curves, apply_data_augmentation, output_path):
+def generate_text_image(text, font_size, font_path, background_path, angle, bars, add_random_text, add_boxes, add_curves, apply_data_augmentation, white_background, output_path):
     print(f"Provided text: {text}")
     scribe = GlyphScribe()
     return scribe.generate(text, font_size, font_path, background_path, angle, bars,
-                          add_random_text, add_boxes, add_curves, apply_data_augmentation, output_path)
+                          add_random_text, add_boxes, add_curves, apply_data_augmentation, white_background, output_path)
 
 if __name__ == '__main__':
     generate_text_image()

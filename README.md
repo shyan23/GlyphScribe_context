@@ -39,6 +39,7 @@ python3 generate_distorted_image.py \
     --add_boxes False \
     --add_curves False \
     --apply_data_augmentation True \
+    --white_background True \
     --output_path "out/generated_image.png"
 ```
 
@@ -46,14 +47,15 @@ python3 generate_distorted_image.py \
 
 - `--text`: The Bengali text to render
 - `--font_size`: Size of the font in points
-- `--font_path`: Path to custom font file (leave empty for default)
-- `--background_path`: Path to background image (leave empty for default)
+- `--font_path`: Path to custom font file (leave empty for random)
+- `--background_path`: Path to background image (leave empty for random background when `--white_background` is False)
 - `--angle`: Rotation angle in degrees for the text
 - `--bars`: Add horizontal bars to the image
 - `--add_random_text`: Add random text elements to the image
 - `--add_boxes`: Add rectangular boxes to the image
 - `--add_curves`: Add curved distortions to the image (takes precedence over `--angle`)
 - `--apply_data_augmentation`: Apply data augmentation transformations
+- `--white_background`: Use white background instead of background image
 - `--output_path`: Path where the generated image will be saved
 
 **Note:** When `--add_curves` is enabled, the `--angle` parameter will have no effect as curve distortions take precedence over rotation.

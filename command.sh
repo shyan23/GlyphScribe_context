@@ -9,4 +9,5 @@ python3 generate_distorted_image.py \
     --add_boxes False \
     --add_curves False \
     --apply_data_augmentation True \
+    --white_background False \
     --output_path "out/generated_image.png"

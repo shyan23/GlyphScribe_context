@@ -226,7 +226,7 @@ class GlyphScribe:
 
     def generate(self, text, font_size=48, font_path="", background_path="", angle=0,
                 bars=True, add_random_text=True, add_boxes=True, add_curves=False,
-                apply_data_augmentation=True, output_path="generated_image.png"):
+                apply_data_augmentation=True, white_background=True, output_path="generated_image.png"):
         """
         Generate a distorted text image with various effects.
 
@@ -241,6 +241,7 @@ class GlyphScribe:
             add_boxes (bool): Add boxes around characters
             add_curves (bool): Apply curves to the text
             apply_data_augmentation (bool): Apply data augmentation
+            white_background (bool): Use white background instead of background image
             output_path (str): Output path of the generated image
         """
         image = Image.new("RGB", (2000, 2000), "white")
@@ -286,13 +287,12 @@ class GlyphScribe:
         image = ImageOps.expand(image, padding, fill="white")
         image_width, image_height = image.size
 
-        if background_path == "":
-            background_path = self.get_random_background_path()
-            white = True
-            if white == False:
-                background_image = Image.open(background_path)
-                background_image = background_image.resize((image_width, image_height))
-                image.paste(background_image)
+        if not white_background:
+            if background_path == "":
+                background_path = self.get_random_background_path()
+            background_image = Image.open(background_path)
+            background_image = background_image.resize((image_width, image_height))
+            image.paste(background_image)
 
         draw = ImageDraw.Draw(image)
 
