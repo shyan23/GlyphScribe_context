@@ -2,4 +2,5 @@ venv
 CLAUDE.md
 .claude
 /out
-glyphscribe/__pycache__
+/glyphscribe/__pycache__
+.env

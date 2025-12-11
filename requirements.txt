@@ -19,3 +19,8 @@ torch==2.2.2
 torchvision==0.17.2
 typing_extensions==4.12.2
 urllib3==2.3.0
+huggingface_hub
+python-dotenv==1.2.1
+datasets
+pytest
+tqdm
