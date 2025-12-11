@@ -4,6 +4,7 @@ import string
 import numpy as np
 import math
 import os
+import json
 from .augmentation import data_transformer
 from bidi.algorithm import get_display
 
@@ -244,6 +245,11 @@ class GlyphScribe:
             white_background (bool): Use white background instead of background image
             output_path (str): Output path of the generated image
         """
+        # Store original input values for context
+        original_text = text
+        original_font_path = font_path
+        original_background_path = background_path
+
         image = Image.new("RGB", (2000, 2000), "white")
         draw = ImageDraw.Draw(image)
 
@@ -287,9 +293,12 @@ class GlyphScribe:
         image = ImageOps.expand(image, padding, fill="white")
         image_width, image_height = image.size
 
+        # Track actual background path used
+        actual_background_path = None
         if not white_background:
             if background_path == "":
                 background_path = self.get_random_background_path()
+            actual_background_path = background_path
             background_image = Image.open(background_path)
             background_image = background_image.resize((image_width, image_height))
             image.paste(background_image)
@@ -324,4 +333,31 @@ class GlyphScribe:
         os.makedirs(directory, exist_ok=True)
 
         image.save(output_path)
+
+        # Save generation context as JSON
+        context = {
+            "text": original_text,
+            "font_size": font_size,
+            "font_path_input": original_font_path,
+            "font_path_used": font_path,
+            "background_path_input": original_background_path,
+            "background_path_used": actual_background_path,
+            "angle": angle,
+            "bars": bars,
+            "add_random_text": add_random_text,
+            "add_boxes": add_boxes,
+            "add_curves": add_curves,
+            "apply_data_augmentation": apply_data_augmentation,
+            "white_background": white_background,
+            "output_path": output_path
+        }
+
+        # Generate JSON file path by replacing image extension with .json
+        json_path = os.path.splitext(output_path)[0] + ".json"
+        with open(json_path, 'w', encoding='utf-8') as f:
+            json.dump(context, f, indent=2, ensure_ascii=False)
+
+        print(f"Image saved to: {output_path}")
+        print(f"Context saved to: {json_path}")
+
         return

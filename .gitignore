@@ -1,0 +1,5 @@
+venv
+CLAUDE.md
+.claude
+/out
+glyphscribe/__pycache__
