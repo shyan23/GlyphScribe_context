@@ -1,6 +1,6 @@
 """
 Batch image generation script using existing GlyphScribe implementation.
-Generates 1000 images using all available fonts.
+Generates single-word images using all available fonts.
 Uses streaming mode to avoid loading the entire 128GB dataset into memory.
 """
 import os
@@ -25,7 +25,7 @@ def get_all_fonts(fonts_dir):
 
 def main():
     # Configuration
-    NUM_IMAGES = 1000
+    NUM_IMAGES = 100
     BASE_OUTPUT_DIR = "out/batch"
     IMAGES_DIR = os.path.join(BASE_OUTPUT_DIR, "images")
     JSON_DIR = os.path.join(BASE_OUTPUT_DIR, "json")

@@ -128,9 +128,11 @@ class GlyphScribe:
             image_size: Tuple of (width, height)
         """
         random_text = ''.join(random.choice(self.all_characters) for _ in range(len(text)))
-        bbox = draw.textbbox((0, 0), text, font=font)
-        text_width = bbox[2] - bbox[0]
-        text_height = bbox[3] - bbox[1]
+        # bbox = draw.textbbox((0, 0), text, font=font)
+        # text_width = bbox[2] - bbox[0]
+        # text_height = bbox[3] - bbox[1]
+        # Using textsize for compatibility with Pillow < 8.0.0
+        text_width, text_height = draw.textsize(text, font=font)
         draw.text(
             (random.randint(-50, 50),
              image_size[1] - random.randint(5, 15) if padding[1] <= padding[3]
@@ -260,14 +262,18 @@ class GlyphScribe:
             font_path = self.get_random_font_path(font_type="hw")
 
         font = ImageFont.truetype(font_path, size=font_size)
-        bbox = draw.textbbox((0, 0), text, font=font)
-        text_width = bbox[2] - bbox[0]
-        text_height = bbox[3] - bbox[1]
+        # bbox = draw.textbbox((0, 0), text, font=font)
+        # text_width = bbox[2] - bbox[0]
+        # text_height = bbox[3] - bbox[1]
+        # Using textsize for compatibility with Pillow < 8.0.0
+        text_width, text_height = draw.textsize(text, font=font)
 
         total_word_width = 0
         for word in words:
-            word_bbox = draw.textbbox((0, 0), word, font=font)
-            word_width = word_bbox[2] - word_bbox[0]
+            # word_bbox = draw.textbbox((0, 0), word, font=font)
+            # word_width = word_bbox[2] - word_bbox[0]
+            # Using textsize for compatibility with Pillow < 8.0.0
+            word_width, _ = draw.textsize(word, font=font)
             total_word_width += word_width
 
         if add_boxes:
