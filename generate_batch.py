@@ -25,12 +25,12 @@ def get_all_fonts(fonts_dir):
 
 def main():
     # Configuration
-    NUM_IMAGES = 100
+    NUM_IMAGES = 10000
     BASE_OUTPUT_DIR = "out/batch"
     IMAGES_DIR = os.path.join(BASE_OUTPUT_DIR, "images")
     JSON_DIR = os.path.join(BASE_OUTPUT_DIR, "json")
     FONTS_DIR = "bangla_fonts"
-    MAX_TEXT_LENGTH = 150
+    MAX_TEXT_LENGTH = 200
 
     print("="*60)
     print("GlyphScribe Batch Generator")
@@ -106,7 +106,6 @@ def main():
                 'angle': random.choice([0, 0, 5, -5, 8, -8, 10]),
                 'bars': random.choice([True, False]),
                 'add_random_text': random.choice([True, False]),
-                'add_boxes': random.choice([True, False, False, False]),
                 'add_curves': random.choice([True, False, False, False]),
                 'apply_data_augmentation': True,  # Always use augmentation
                 'white_background': random.choice([True, True, True, False]),

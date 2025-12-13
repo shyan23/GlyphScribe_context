@@ -106,8 +106,8 @@ def shift_text_position(image_path, position='center', dummy_word='প্রথ�
 
 def main():
     # Configuration
-    NUM_SAMPLES = 100  # Number of text samples to load from dataset
-    NUM_IMAGES = 100  # Total number of word images to generate
+    NUM_SAMPLES = 10000  # Number of text samples to load from dataset
+    NUM_IMAGES = 10000  # Total number of word images to generate
     BASE_OUTPUT_DIR = "out/single_words"
     IMAGES_DIR = os.path.join(BASE_OUTPUT_DIR, "images")
     JSON_DIR = os.path.join(BASE_OUTPUT_DIR, "json")
@@ -115,7 +115,6 @@ def main():
     MIN_WORD_LENGTH = 2  # Minimum word length to generate
 
     # Text position parameters (ADJUSTABLE)
-    TEXT_POSITION = 'left'  # Options: 'left', 'center', or 'right'
     DUMMY_WORD = 'La'  # Reference word for positioning (invisible, at center) - 1-2 letters
     DUMMY_SPACING_MULTIPLIER = 0.2  # Spacing around dummy word (0.3 = 30% of dummy width)
 
@@ -214,10 +213,13 @@ def main():
             # Generate using GlyphScribe.generate()
             scribe.generate(**generation_params)
 
+            # Randomly select text position for this image
+            text_position = random.choice(['left', 'center', 'right'])
+
             # Apply position shifting to the generated image (using dummy word reference)
             shift_text_position(
                 image_path,
-                position=TEXT_POSITION,
+                position=text_position,
                 dummy_word=DUMMY_WORD,
                 font_size=selected_font_size,
                 font_path=font_path
