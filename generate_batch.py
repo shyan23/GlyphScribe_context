@@ -25,12 +25,13 @@ def get_all_fonts(fonts_dir):
 
 def main():
     # Configuration
-    NUM_IMAGES = 10000
+    NUM_IMAGES = 10
     BASE_OUTPUT_DIR = "out/batch"
     IMAGES_DIR = os.path.join(BASE_OUTPUT_DIR, "images")
     JSON_DIR = os.path.join(BASE_OUTPUT_DIR, "json")
     FONTS_DIR = "bangla_fonts"
-    MAX_TEXT_LENGTH = 200
+    MAX_TEXT_LENGTH = 300  # Increased for multi-line support
+    MAX_LINE_WIDTH = 1400  # Maximum width per line in pixels
 
     print("="*60)
     print("GlyphScribe Batch Generator")
@@ -87,9 +88,13 @@ def main():
                 failed += 1
                 continue
 
-            # Truncate long texts
-            if len(text) > MAX_TEXT_LENGTH:
-                text = text[:MAX_TEXT_LENGTH]
+            # Randomly decide if this should be single-line or multi-line
+            is_multiline = random.choice([True, False])
+
+            # Adjust text length based on line type
+            max_length = MAX_TEXT_LENGTH if is_multiline else 80  # Shorter for single-line
+            if len(text) > max_length:
+                text = text[:max_length]
 
             # Cycle through all fonts
             font_path = fonts[img_idx % len(fonts)]
@@ -100,15 +105,18 @@ def main():
 
             params = {
                 'text': text,
-                'font_size': random.choice([36, 40, 44, 48, 52, 56]),
+                'font_size': random.choice([40, 44, 48, 52]),  # Slightly larger for clarity
                 'font_path': font_path,
                 'background_path': "",
-                'angle': random.choice([0, 0, 5, -5, 8, -8, 10]),
-                'bars': random.choice([True, False]),
-                'add_random_text': random.choice([True, False]),
-                'add_curves': random.choice([True, False, False, False]),
-                'apply_data_augmentation': True,  # Always use augmentation
-                'white_background': random.choice([True, True, True, False]),
+                'angle': random.choice([0, 0, 0, 0, 5, -5]),  # Mostly straight, occasional tilt
+                'bars': random.choice([False, False, False, True]),  # Mostly no bars for clarity
+                'add_random_text': False,  # Disabled for clear text
+                'add_curves': False,  # Disabled for clear text
+                'add_boxes': False,  # No character boxes
+                'apply_data_augmentation': random.choice([True, True, False]),  # Mostly enabled but some without
+                'white_background': random.choice([True, True, True, True, False]),  # Mostly white for clarity
+                'multiline': is_multiline,  # Randomly enable/disable multi-line text wrapping
+                'max_line_width': MAX_LINE_WIDTH,
                 'output_path': image_path
             }
 

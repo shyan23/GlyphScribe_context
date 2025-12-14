@@ -73,6 +73,46 @@ class GlyphScribe:
         words = re.findall(r'\S+\s*', sentence)
         return words
 
+    @staticmethod
+    def wrap_text(text, font, max_width):
+        """
+        Wrap text into multiple lines based on maximum width.
+
+        Args:
+            text (str): Text to wrap
+            font: ImageFont object
+            max_width (int): Maximum width in pixels for each line
+
+        Returns:
+            list: List of text lines
+        """
+        import re
+        from PIL import ImageDraw, Image
+
+        # Create temporary draw object for measuring
+        temp_img = Image.new("RGB", (1, 1))
+        draw = ImageDraw.Draw(temp_img)
+
+        words = re.findall(r'\S+', text)
+        lines = []
+        current_line = ""
+
+        for word in words:
+            test_line = current_line + word + " " if current_line else word + " "
+            test_width, _ = draw.textsize(test_line, font=font)
+
+            if test_width <= max_width:
+                current_line = test_line
+            else:
+                if current_line:
+                    lines.append(current_line.rstrip())
+                current_line = word + " "
+
+        if current_line:
+            lines.append(current_line.rstrip())
+
+        return lines if lines else [text]
+
     def get_random_font_path(self, font_type="hw"):
         """
         Get a random font path from the fonts directory.
@@ -229,7 +269,8 @@ class GlyphScribe:
 
     def generate(self, text, font_size=48, font_path="", background_path="", angle=0,
                 bars=True, add_random_text=True, add_boxes=True, add_curves=False,
-                apply_data_augmentation=True, white_background=True, output_path="generated_image.png"):
+                apply_data_augmentation=True, white_background=True, output_path="generated_image.png",
+                multiline=False, max_line_width=1200):
         """
         Generate a distorted text image with various effects.
 
@@ -246,6 +287,8 @@ class GlyphScribe:
             apply_data_augmentation (bool): Apply data augmentation
             white_background (bool): Use white background instead of background image
             output_path (str): Output path of the generated image
+            multiline (bool): Enable multi-line text wrapping
+            max_line_width (int): Maximum width in pixels for each line when multiline is enabled
         """
         # Store original input values for context
         original_text = text
@@ -256,16 +299,21 @@ class GlyphScribe:
         draw = ImageDraw.Draw(image)
 
         text = get_display(text)
-        words = self.extract_words(text)
 
         if font_path == "":
             font_path = self.get_random_font_path(font_type="hw")
 
         font = ImageFont.truetype(font_path, size=font_size)
-        # bbox = draw.textbbox((0, 0), text, font=font)
-        # text_width = bbox[2] - bbox[0]
-        # text_height = bbox[3] - bbox[1]
-        # Using textsize for compatibility with Pillow < 8.0.0
+
+        # Handle multi-line text wrapping
+        if multiline:
+            lines = self.wrap_text(text, font, max_line_width)
+        else:
+            lines = [text]
+
+        words = self.extract_words(text)
+
+        # Calculate dimensions for single line (original behavior)
         text_width, text_height = draw.textsize(text, font=font)
 
         total_word_width = 0
@@ -281,17 +329,35 @@ class GlyphScribe:
             character_width, character_height = np.mean([draw.textsize(c, font) for c in text], axis=0).astype(int)
             image = Image.new("RGB", (int(tol * character_width * len(text)), character_height), "white")
         else:
-            w = text_width
-            h = text_height
+            if multiline:
+                # Calculate dimensions for multi-line text
+                max_width = 0
+                total_height = 0
+                line_height = text_height
+                line_spacing = int(line_height * 0.3)  # 30% spacing between lines
 
-            if angle != 0 or add_curves == True:
-                w = total_word_width
+                for line in lines:
+                    line_width, _ = draw.textsize(line, font=font)
+                    max_width = max(max_width, line_width)
+                    total_height += line_height + line_spacing
 
-            angle_rad = math.radians(angle)
-            new_w = w
-            new_h = h
-            if add_curves == False:
-                new_h = h + int(abs(w * np.tan(angle_rad)))
+                # Remove extra spacing after last line
+                total_height -= line_spacing
+
+                new_w = max_width
+                new_h = total_height
+            else:
+                w = text_width
+                h = text_height
+
+                if angle != 0 or add_curves == True:
+                    w = total_word_width
+
+                angle_rad = math.radians(angle)
+                new_w = w
+                new_h = h
+                if add_curves == False:
+                    new_h = h + int(abs(w * np.tan(angle_rad)))
 
             image = Image.new("RGB", (new_w, new_h), "white")
 
@@ -320,7 +386,21 @@ class GlyphScribe:
         if add_boxes:
             self.draw_text_with_boxes(draw, text, font, padding, tol, character_width, character_height)
         else:
-            if add_curves:
+            if multiline:
+                # Draw multi-line text
+                y_offset = padding[1]
+                line_height = text_height
+                line_spacing = int(line_height * 0.3)
+
+                for line in lines:
+                    draw.text(
+                        (padding[0], y_offset),
+                        line,
+                        font=font,
+                        fill=tuple([np.random.randint(0, 100)] * 3),
+                    )
+                    y_offset += line_height + line_spacing
+            elif add_curves:
                 self.draw_text_with_curves(draw, words, font, padding)
             elif angle != 0:
                 self.draw_text_with_skew(draw, words, font, padding, text_width, image_height, angle)
@@ -355,7 +435,9 @@ class GlyphScribe:
             "add_curves": add_curves,
             "apply_data_augmentation": apply_data_augmentation,
             "white_background": white_background,
-            "output_path": output_path
+            "output_path": output_path,
+            "multiline": multiline,
+            "max_line_width": max_line_width
         }
 
         # Generate JSON file path by replacing image extension with .json
