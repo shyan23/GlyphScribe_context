@@ -1,6 +1,6 @@
 """
-Batch image generation script with Google Drive upload.
-Generates multi-line images and uploads directly to Google Drive without local storage.
+Batch image generation script with direct Google Drive upload.
+Generates multi-line images and uploads them directly to Google Drive without local storage.
 """
 import random
 from pathlib import Path
@@ -8,9 +8,6 @@ from tqdm import tqdm
 from glyphscribe.glyph_scribe_memory import GlyphScribeMemory
 from datasets import load_dataset
 from gdrive_uploader import GDriveUploader
-
-
-#ds = load_dataset("hishab/titulm-bangla-corpus", "default", streaming=True)
 
 
 def get_all_fonts(fonts_dir):
@@ -23,7 +20,7 @@ def get_all_fonts(fonts_dir):
 
 def main():
     # Configuration
-    NUM_IMAGES = 10000
+    NUM_IMAGES = 10
     FONTS_DIR = "bangla_fonts"
     MAX_TEXT_LENGTH = 300  # Increased for multi-line support
     MAX_LINE_WIDTH = 1400  # Maximum width per line in pixels
@@ -41,10 +38,9 @@ def main():
         print(f"  Folder URL: {uploader.get_folder_url()}")
     except Exception as e:
         print(f"✗ Failed to connect to Google Drive: {e}")
-        print("\nTroubleshooting:")
-        print("  1. Make sure credentials.json exists")
-        print("  2. Run this script locally first to authenticate")
-        print("  3. Check your internet connection")
+        print("\nPlease ensure:")
+        print("  1. credentials.json file exists in the project directory")
+        print("  2. You have authenticated with Google Drive")
         return
 
     # Load dataset in streaming mode

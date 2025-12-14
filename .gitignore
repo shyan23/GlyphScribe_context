@@ -4,3 +4,22 @@ CLAUDE.md
 /out
 /glyphscribe/__pycache__
 .env
+
+# Google Drive credentials and tokens (SENSITIVE - NEVER COMMIT!)
+credentials.json
+gdrive_token.json
+gdrive_token/
+client_secret*.json
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Docker (if needed later)
+.dockerignore

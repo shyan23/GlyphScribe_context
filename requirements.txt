@@ -24,3 +24,7 @@ python-dotenv==1.2.1
 datasets
 pytest
 tqdm
+PyDrive2
+google-auth
+google-auth-oauthlib
+google-auth-httplib2

@@ -1,6 +1,6 @@
 """
-Single-word image generation script with Google Drive upload.
-Generates clean single-word images and uploads directly to Google Drive without local storage.
+Single-word image generation script with direct Google Drive upload.
+Generates clean single-word images and uploads them directly to Google Drive without local storage.
 """
 import random
 import re
@@ -10,6 +10,7 @@ from glyphscribe.glyph_scribe_memory import GlyphScribeMemory
 from datasets import load_dataset
 from PIL import Image, ImageDraw, ImageFont
 from gdrive_uploader import GDriveUploader
+import io
 
 
 def get_all_fonts(fonts_dir):
@@ -21,19 +22,8 @@ def get_all_fonts(fonts_dir):
 
 
 def extract_words_from_text(text, min_length=2):
-    """
-    Extract individual words from text.
-
-    Args:
-        text: Input text string
-        min_length: Minimum word length to include
-
-    Returns:
-        List of words filtered by minimum length
-    """
-    # Split by whitespace and filter out empty strings
+    """Extract individual words from text."""
     words = re.findall(r'\S+', text)
-    # Filter by minimum length
     words = [w for w in words if len(w) >= min_length]
     return words
 
@@ -86,8 +76,8 @@ def shift_text_position(image, position='center', dummy_word='La', font_size=48,
 
 def main():
     # Configuration
-    NUM_SAMPLES = 10000
-    NUM_IMAGES = 10000
+    NUM_SAMPLES = 10
+    NUM_IMAGES = 10
     FONTS_DIR = "bangla_fonts"
     MIN_WORD_LENGTH = 2
     DUMMY_WORD = 'La'
@@ -105,10 +95,9 @@ def main():
         print(f"  Folder URL: {uploader.get_folder_url()}")
     except Exception as e:
         print(f"✗ Failed to connect to Google Drive: {e}")
-        print("\nTroubleshooting:")
-        print("  1. Make sure credentials.json exists")
-        print("  2. Run this script locally first to authenticate")
-        print("  3. Check your internet connection")
+        print("\nPlease ensure:")
+        print("  1. credentials.json file exists in the project directory")
+        print("  2. You have authenticated with Google Drive")
         return
 
     # Load dataset in streaming mode
